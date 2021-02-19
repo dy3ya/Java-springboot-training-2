@@ -1,25 +1,20 @@
 package com.bootcamp.springboot.model;
 
+import org.hibernate.annotations.GeneratorType;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "dbo_dibangatodo")
-public class todoModel {
-
+@Table(name = "dbo_dibangaroles")
+public class RoleModel {
     @Id
-    @Column(name= "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @Column(name = "description")
+    @Column(name = "roleName")
+    private String roleName;
     private String description;
 
-    public todoModel() {}
-
-    public todoModel(Long id, String description) {
-        this.id = id;
-        this.description = description;
-    }
+    public RoleModel(){}
 
     public Long getId() {
         return id;
@@ -27,6 +22,14 @@ public class todoModel {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 
     public String getDescription() {

@@ -1,38 +1,64 @@
 package com.bootcamp.springboot.controller;
 
-import com.bootcamp.springboot.config.ServerConfig;
+
 import com.bootcamp.springboot.model.todoModel;
+import com.bootcamp.springboot.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import com.bootcamp.springboot.service.todoService;
 
-import java.util.List;
-
-@RestController
-@RequestMapping({"/","/index"})
+@Controller
+@RequestMapping("todo")
 public class IndexController {
 
-    private todoService TODOservice;
-    private ServerConfig serverConfigs;
+    TodoService todoService;
 
     @Autowired
-    private IndexController(todoService TODOservice, ServerConfig serverConfigs)
-    {
-
-        this.TODOservice = TODOservice;
-        this.serverConfigs = serverConfigs;
+    public IndexController(TodoService todoService) {
+        this.todoService = todoService;
     }
+
 
     @GetMapping("/list")
-        ResponseEntity<List<todoModel>> getTodoList(){
-        List<todoModel> todoList = this.TODOservice.getTodoModel();
-
-        System.out.println(this.serverConfigs.getServer());
-        return new ResponseEntity<>(todoList, HttpStatus.OK);
+    public String List(Model model) {
+        model.addAttribute("todoList",this.todoService.getAllTodos());
+        return "list";
     }
 
+    @GetMapping("/create")
+    public String create(Model model) {
+        model.addAttribute("todo",new todoModel());
+        model.addAttribute("action","create");
+        return "create";
+    }
+
+    @GetMapping("/edit")
+    public String update(@ModelAttribute todoModel todo,Model model) {
+        model.addAttribute("todo",todoService.getTodoById(todo));
+        model.addAttribute("action","edit");
+        return "create";
+    }
+
+
+    @PostMapping("/add-todo")
+    public String add(@ModelAttribute todoModel todo,Model model) {
+        todoService.AddNewTodo(todo);
+        return "redirect:/todo/list";
+    }
+
+    @PostMapping("/edit-todo")
+    public String editTodo(@ModelAttribute todoModel todo,Model model) {
+        todoService.setTodoDescription(todo);
+        return "redirect:/todo/list";
+    }
+
+    @GetMapping("/delete-todo")
+    public String delete(@ModelAttribute todoModel todo,Model model) {
+        todoService.deleteTodo(todo);
+        return "redirect:/todo/list";
+    }
 }

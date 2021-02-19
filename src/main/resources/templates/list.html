@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TodoApp</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css} "/>
+    <link rel="stylesheet" th:href="@{/webjars/org.webjars/datatables-bootstrap/2-20120202-2/DT_bootstrap.css} "/>
+    <script type="text/javascript"  th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+    <script type="text/javascript"  th:src="@{/webjars/datatables/1.10.23/js/jquery.dataTables.min.js}"></script>
+    <script th:inline="javascript">
+
+        var todoList = /*[[${todoList}]]*/
+
+            $(document).ready(function() {
+                $('#tblTodos').DataTable();
+            });
+    </script>
+
+</head>
+<body>
+
+<div class="container">
+    <br/>
+    <h1>Todo Lists:</h1>
+    <br/><br/>
+
+    <a class="btn btn-link" style="display: inline-block" href="/todo/create">Create new</a>
+    <br/><br/>
+
+    <table id="tblTodos" class="table table-bordered">
+        <thead  class="table-dark">
+        <tr>
+            <th>Id</th>
+            <th>Description</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${todoList.size()} == 0">
+            <td colspan="3">No record found</td>
+        </tr>
+        <tr th:each="data, iterstat: ${todoList}">
+            <td th:text="${data.getId()}"></td>
+            <td th:text="${data.getDescription()}"></td>
+            <td>
+                <a class="btn btn-link" th:href="@{'/todo/edit?id=' +  ${data.getId()} }">Edit</a> |
+                <a class="btn btn-link" th:href="@{'/todo/delete-todo?id=' +  ${data.getId()} }">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+
+
